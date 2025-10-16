@@ -1,0 +1,132 @@
+@model TrakeadorWeb.ViewModels.ExpertCasaApostasViewModel
+
+@{
+    ViewData["Title"] = "Associar Casa de Apostas";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>@ViewData["Title"]</h1>
+        <p class="text-muted">Expert: <strong>@Model.ExpertNome</strong></p>
+    </div>
+    <a asp-action="Index" asp-route-expertId="@Model.ExpertId" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-link"></i> Dados da Associação
+                </h4>
+            </div>
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                
+                <input type="hidden" asp-for="ExpertId" />
+                
+                <div class="mb-3">
+                    <label asp-for="CasaDeApostasId" class="form-label"></label>
+                    <select asp-for="CasaDeApostasId" asp-items="Model.CasasDeApostas" class="form-select">
+                        <option value="">-- Selecione uma casa de apostas --</option>
+                    </select>
+                    <span asp-validation-for="CasaDeApostasId" class="text-danger"></span>
+                    <div class="form-text">
+                        Escolha a casa de apostas que será associada a este expert.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="CodigoAfiliado" class="form-label"></label>
+                    <input asp-for="CodigoAfiliado" class="form-control" placeholder="Ex: zyr47z0k, MVpiOM, 3393" />
+                    <span asp-validation-for="CodigoAfiliado" class="text-danger"></span>
+                    <div class="form-text">
+                        Código de afiliado fornecido pela casa de apostas para este expert.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="ParametrosAdicionais" class="form-label"></label>
+                    <textarea asp-for="ParametrosAdicionais" class="form-control" rows="3" 
+                              placeholder="Ex: afp=trafego&afp1=14_10_25&afp2=semana3out"></textarea>
+                    <span asp-validation-for="ParametrosAdicionais" class="text-danger"></span>
+                    <div class="form-text">
+                        Parâmetros adicionais específicos para esta casa de apostas (opcional).
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Associar Casa de Apostas
+                </button>
+                <a asp-action="Index" asp-route-expertId="@Model.ExpertId" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-lightbulb"></i> Dicas
+                </h6>
+            </div>
+            <div class="card-body">
+                <h6>Códigos de Afiliado Típicos:</h6>
+                <ul class="list-unstyled small">
+                    <li><strong>Esportiva:</strong> <code>zyr47z0k</code></li>
+                    <li><strong>Novibet:</strong> <code>MVpiOM</code></li>
+                    <li><strong>BetMGM:</strong> <code>3393</code></li>
+                </ul>
+                
+                <hr>
+                
+                <h6>Parâmetros Comuns:</h6>
+                <ul class="list-unstyled small">
+                    <li><strong>Esportiva:</strong> <code>afp=trafego&afp1=valor</code></li>
+                    <li><strong>Novibet:</strong> <code>lpage=valor&site_id=valor</code></li>
+                    <li><strong>BetMGM:</strong> <code>pid=valor&bid=valor</code></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-3" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-info-circle"></i> Importante
+            </h6>
+            <p class="small mb-0">
+                Certifique-se de que o código de afiliado está correto. Códigos incorretos podem resultar em links que não funcionam.
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Auto-preenchimento baseado na casa de apostas selecionada
+        document.getElementById('CasaDeApostasId').addEventListener('change', function() {
+            const selectElement = this;
+            const selectedText = selectElement.options[selectElement.selectedIndex].text.toLowerCase();
+            const codigoField = document.getElementById('CodigoAfiliado');
+            const parametrosField = document.getElementById('ParametrosAdicionais');
+            
+            // Sugestões baseadas na casa selecionada
+            if (selectedText.includes('esportiva')) {
+                if (!codigoField.value) codigoField.value = 'zyr47z0k';
+                if (!parametrosField.value) parametrosField.value = 'afp=trafego&afp1=14_10_25&afp2=semana3out&afp6=superodd&afp9=SPODDBOTXFLAGP&home=1';
+            } else if (selectedText.includes('novibet')) {
+                if (!codigoField.value) codigoField.value = 'MVpiOM';
+                if (!parametrosField.value) parametrosField.value = 'lpage=jcBppl&site_id=1020436';
+            } else if (selectedText.includes('betmgm')) {
+                if (!codigoField.value) codigoField.value = '3393';
+                if (!parametrosField.value) parametrosField.value = 'pid=3393&bid=1519';
+            }
+        });
+    </script>
+}

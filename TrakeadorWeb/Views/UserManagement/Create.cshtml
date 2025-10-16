@@ -1,0 +1,105 @@
+@model TrakeadorWeb.ViewModels.CreateUserViewModel
+
+@{
+    ViewData["Title"] = "Criar Novo Usuário";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>@ViewData["Title"]</h1>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus"></i> Dados do Novo Usuário
+                </h4>
+            </div>
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <input asp-for="Email" class="form-control" placeholder="usuario@exemplo.com" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                    <div class="form-text">
+                        O email será usado como nome de usuário para login.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Password" class="form-label"></label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input asp-for="Password" class="form-control" placeholder="Digite uma senha segura" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <div class="form-text">
+                        A senha deve ter pelo menos 6 caracteres, incluindo maiúsculas, minúsculas e números.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input asp-for="ConfirmPassword" class="form-control" placeholder="Confirme a senha" />
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Criar Usuário
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-shield-alt"></i> Política de Senhas
+                </h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small">
+                    <li><i class="fas fa-check text-success"></i> Mínimo 6 caracteres</li>
+                    <li><i class="fas fa-check text-success"></i> Pelo menos 1 letra maiúscula</li>
+                    <li><i class="fas fa-check text-success"></i> Pelo menos 1 letra minúscula</li>
+                    <li><i class="fas fa-check text-success"></i> Pelo menos 1 número</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-3" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-info-circle"></i> Importante
+            </h6>
+            <p class="small mb-0">
+                O usuário criado terá acesso completo ao sistema, incluindo a capacidade de criar outros usuários.
+            </p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

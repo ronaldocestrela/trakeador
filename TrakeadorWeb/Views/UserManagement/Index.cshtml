@@ -1,0 +1,136 @@
+@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityUser>
+
+@{
+    ViewData["Title"] = "Gerenciar Usuários";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>@ViewData["Title"]</h1>
+    <a asp-action="Create" class="btn btn-primary">
+        <i class="fas fa-user-plus"></i> Novo Usuário
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">
+            <i class="fas fa-users"></i> Lista de Usuários
+        </h5>
+    </div>
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>
+                                <i class="fas fa-envelope"></i> Email
+                            </th>
+                            <th>
+                                <i class="fas fa-check-circle"></i> Email Confirmado
+                            </th>
+                            <th>
+                                <i class="fas fa-calendar"></i> Data de Criação
+                            </th>
+                            <th width="200">
+                                <i class="fas fa-cog"></i> Ações
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@user.Email</strong>
+                                    @if (user.Email == "admin@trakeador.com")
+                                    {
+                                        <span class="badge bg-warning ms-2">Admin Master</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.EmailConfirmed)
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check"></i> Confirmado
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-clock"></i> Pendente
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <small class="text-muted">
+                                        @(user.Id != null ? "Sistema" : "N/A")
+                                    </small>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="ResetPassword" asp-route-id="@user.Id" 
+                                           class="btn btn-outline-warning btn-sm" 
+                                           title="Redefinir Senha">
+                                            <i class="fas fa-key"></i>
+                                        </a>
+                                        @if (user.Email != "admin@trakeador.com" || Model.Count() > 1)
+                                        {
+                                            <a asp-action="Delete" asp-route-id="@user.Id" 
+                                               class="btn btn-outline-danger btn-sm" 
+                                               title="Excluir Usuário">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-4">
+                <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Nenhum usuário encontrado</h5>
+                <p class="text-muted">Clique em "Novo Usuário" para adicionar o primeiro usuário.</p>
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+        <small class="text-muted">
+            <i class="fas fa-info-circle"></i> 
+            Total de usuários cadastrados: <strong>@Model.Count()</strong>
+        </small>
+    </div>
+</div>
+
+<div class="alert alert-info mt-4" role="alert">
+    <h6 class="alert-heading">
+        <i class="fas fa-info-circle"></i> Informações importantes
+    </h6>
+    <ul class="mb-0 small">
+        <li>Apenas usuários autenticados podem criar novos usuários</li>
+        <li>O registro público foi desabilitado por segurança</li>
+        <li>O usuário admin master não pode ser excluído se for o único usuário</li>
+    </ul>
+</div>

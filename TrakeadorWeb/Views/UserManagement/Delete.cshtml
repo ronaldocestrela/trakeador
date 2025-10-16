@@ -1,0 +1,93 @@
+@model Microsoft.AspNetCore.Identity.IdentityUser
+
+@{
+    ViewData["Title"] = "Excluir Usuário";
+}
+
+<h1 class="text-danger">@ViewData["Title"]</h1>
+
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">
+        <i class="fas fa-exclamation-triangle"></i> Atenção!
+    </h4>
+    <p>Você está prestes a excluir o usuário <strong>@Model.Email</strong>.</p>
+    <hr>
+    <p class="mb-0">Esta ação não pode ser desfeita. Tem certeza que deseja continuar?</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Informações do Usuário</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Email</dt>
+                    <dd class="col-sm-9">
+                        @Model.Email
+                        @if (Model.Email == "admin@trakeador.com")
+                        {
+                            <span class="badge bg-warning ms-2">Admin Master</span>
+                        }
+                    </dd>
+                    
+                    <dt class="col-sm-3">Email Confirmado</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.EmailConfirmed)
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-check"></i> Confirmado
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning">
+                                <i class="fas fa-clock"></i> Pendente
+                            </span>
+                        }
+                    </dd>
+                    
+                    <dt class="col-sm-3">ID do Usuário</dt>
+                    <dd class="col-sm-9"><code>@Model.Id</code></dd>
+                </dl>
+            </div>
+            <div class="card-footer">
+                <form asp-action="Delete" class="d-inline">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Confirmar Exclusão
+                    </button>
+                </form>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="alert alert-warning" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-exclamation-triangle"></i> Consequências da exclusão
+            </h6>
+            <ul class="small mb-0">
+                <li>O usuário não poderá mais fazer login</li>
+                <li>Todas as sessões ativas serão invalidadas</li>
+                <li>Esta ação é irreversível</li>
+            </ul>
+        </div>
+        
+        @if (Model.Email == "admin@trakeador.com")
+        {
+            <div class="alert alert-danger" role="alert">
+                <h6 class="alert-heading">
+                    <i class="fas fa-shield-alt"></i> Usuário Master
+                </h6>
+                <p class="small mb-0">
+                    Este é o usuário administrador master do sistema. Certifique-se de que existe pelo menos um outro usuário antes de excluí-lo.
+                </p>
+            </div>
+        }
+    </div>
+</div>

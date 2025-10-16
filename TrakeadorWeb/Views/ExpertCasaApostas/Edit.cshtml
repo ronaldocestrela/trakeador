@@ -1,0 +1,120 @@
+@model TrakeadorWeb.ViewModels.ExpertCasaApostasViewModel
+
+@{
+    ViewData["Title"] = "Editar Associação";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>@ViewData["Title"]</h1>
+        <p class="text-muted">Expert: <strong>@Model.ExpertNome</strong> → Casa: <strong>@Model.CasaDeApostasNome</strong></p>
+    </div>
+    <a asp-action="Index" asp-route-expertId="@Model.ExpertId" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Edit" class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-edit"></i> Editar Dados da Associação
+                </h4>
+            </div>
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="ExpertId" />
+                <input type="hidden" asp-for="CasaDeApostasId" />
+                
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i>
+                    Editando associação entre <strong>@Model.ExpertNome</strong> e <strong>@Model.CasaDeApostasNome</strong>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="CodigoAfiliado" class="form-label"></label>
+                    <input asp-for="CodigoAfiliado" class="form-control" />
+                    <span asp-validation-for="CodigoAfiliado" class="text-danger"></span>
+                    <div class="form-text">
+                        Código de afiliado fornecido pela casa de apostas para este expert.
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="ParametrosAdicionais" class="form-label"></label>
+                    <textarea asp-for="ParametrosAdicionais" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="ParametrosAdicionais" class="text-danger"></span>
+                    <div class="form-text">
+                        Parâmetros adicionais específicos para esta casa de apostas (opcional).
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Salvar Alterações
+                </button>
+                <a asp-action="Index" asp-route-expertId="@Model.ExpertId" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-home"></i> @Model.CasaDeApostasNome
+                </h6>
+            </div>
+            <div class="card-body">
+                @{
+                    string dicas = Model.CasaDeApostasNome?.ToLower() switch
+                    {
+                        "esportiva" => "Código típico: zyr47z0k\nParâmetros: afp=trafego&afp1=valor&afp2=valor",
+                        "novibet" => "Código típico: MVpiOM\nParâmetros: lpage=valor&site_id=valor",
+                        "betmgm" => "Código típico: 3393\nParâmetros: pid=valor&bid=valor",
+                        _ => "Consulte a documentação da casa de apostas para os códigos corretos."
+                    };
+                }
+                
+                <h6>Dicas para @Model.CasaDeApostasNome:</h6>
+                <pre class="small">@dicas</pre>
+            </div>
+        </div>
+        
+        <div class="alert alert-warning mt-3" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-exclamation-triangle"></i> Atenção
+            </h6>
+            <p class="small mb-0">
+                Alterações nos códigos ou parâmetros afetarão todos os links futuros gerados para esta associação.
+            </p>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-tools"></i> Ações Rápidas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-controller="LinkTracking" asp-action="Casa" 
+                       asp-route-casaId="@Model.CasaDeApostasId" 
+                       asp-route-expertId="@Model.ExpertId" 
+                       class="btn btn-success btn-sm">
+                        <i class="fas fa-link"></i> Testar Geração de Links
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  bot-trakeador:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bot-trakeador
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Opcional: mount de logs se necessário
+      - ./logs:/app/logs
+    networks:
+      - bot-network
+    # Recursos limitados para otimização
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+          cpus: '0.5'
+        reservations:
+          memory: 128M
+          cpus: '0.25'
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('https://api.telegram.org/bot8226215035:AAGX1-VVhg7aWaDy7xJCptwCDHFO4itp2MQ/getMe', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  bot-network:
+    driver: bridge
+
+volumes:
+  logs:
+    driver: local

@@ -1,0 +1,8 @@
+# Trakeador web
+## Infomrações para geral
+Aplicação para montar links traqueados
+Hávera uma entidade expert que tera uma relação entre outras duas, são elas a de casas de apostas e a outra codigos de afiliados, a pagina principal será uma listagem com todos os experts cadastrados, ao clicar no expert ira ser redirecionado para uma página com os casas de apostas que ele tem cadastradas, e ao clicar na casa irá para uma pagina onde ele recebe uma um link, e faz os tratamentos necessários para transformar em um link trakeado.
+No momento vamos ter 3 casas a espotiva onde ele recebe o link: "https://go.aff.esportiva.bet/zyr47z0k?shareCode=TGI5FRERKSL" e retorna "https://go.aff.esportiva.bet/zyr47z0k?afp=trafego&afp1=14_10_25&afp2=semana3out&afp6=superodd&shareCode=TGI5FRERKSL&afp9=SPODDBOTXFLAGP&home=1", a outra é a Novibet que recebe "https://www.novibet.bet.br/sports/shared-bet/5db6d066ae07ae05329d5893911848a80560fc07e5968dce5fc16f758845d85b-0" e devolve "https://rt.novibet.partners/o/MVpiOM?lpage=jcBppl&site_id=1020436&redirect_url=https%3A%2F%2Fwww.novibet.bet.br%2Fsports%2Fshared-bet%2F5db6d066ae07ae05329d5893911848a80560fc07e5968dce5fc16f758845d85b-0" e na betmgm rece "3906784898,3906729211" ou somente "3906784898" e devolve "https://ntrfr.betmgm.bet.br/redirect.aspx?pid=3393&bid=1519&redirectURL=https://www.betmgm.bet.br/aposta-esportiva#featured?coupon=combination|3906784898,3906729211|30|replace"
+
+## Tecnologias
+Monolito em .net com autenticação usando entityframework e claims

@@ -1,0 +1,45 @@
+@model TrakeadorWeb.Models.Expert
+
+@{
+    ViewData["Title"] = "Novo Expert";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <form asp-action="Create" class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Informações do Expert</h4>
+            </div>
+            <div class="card-body">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="mb-3">
+                    <label asp-for="Nome" class="form-label"></label>
+                    <input asp-for="Nome" class="form-control" placeholder="Digite o nome do expert" />
+                    <span asp-validation-for="Nome" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Descricao" class="form-label"></label>
+                    <textarea asp-for="Descricao" class="form-control" rows="3" 
+                              placeholder="Digite uma descrição para o expert (opcional)"></textarea>
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Salvar
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Voltar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

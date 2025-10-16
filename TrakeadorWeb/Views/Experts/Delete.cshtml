@@ -1,0 +1,58 @@
+@model TrakeadorWeb.Models.Expert
+
+@{
+    ViewData["Title"] = "Excluir Expert";
+}
+
+<h1 class="text-danger">@ViewData["Title"]</h1>
+
+<div class="alert alert-warning" role="alert">
+    <h4 class="alert-heading">
+        <i class="fas fa-exclamation-triangle"></i> Atenção!
+    </h4>
+    <p>Você está prestes a excluir o expert <strong>@Model.Nome</strong>.</p>
+    <hr>
+    <p class="mb-0">Esta ação não pode ser desfeita. Tem certeza que deseja continuar?</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Informações do Expert</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Nome</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Nome)</dd>
+                    
+                    <dt class="col-sm-3">Descrição</dt>
+                    <dd class="col-sm-9">
+                        @if (!string.IsNullOrEmpty(Model.Descricao))
+                        {
+                            @Html.DisplayFor(model => model.Descricao)
+                        }
+                        else
+                        {
+                            <em class="text-muted">Sem descrição</em>
+                        }
+                    </dd>
+                    
+                    <dt class="col-sm-3">Data de Criação</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.DataCriacao)</dd>
+                </dl>
+            </div>
+            <div class="card-footer">
+                <form asp-action="Delete" class="d-inline">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Confirmar Exclusão
+                    </button>
+                </form>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

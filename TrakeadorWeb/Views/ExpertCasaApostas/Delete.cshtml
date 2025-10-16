@@ -1,0 +1,116 @@
+@model TrakeadorWeb.Models.ExpertCasaApostasAfiliado
+
+@{
+    ViewData["Title"] = "Remover Associação";
+}
+
+<h1 class="text-danger">@ViewData["Title"]</h1>
+
+<div class="alert alert-danger" role="alert">
+    <h4 class="alert-heading">
+        <i class="fas fa-exclamation-triangle"></i> Atenção!
+    </h4>
+    <p>Você está prestes a remover a associação entre <strong>@Model.Expert.Nome</strong> e <strong>@Model.CasaDeApostas.Nome</strong>.</p>
+    <hr>
+    <p class="mb-0">Esta ação desativará a geração de links para esta combinação. Tem certeza que deseja continuar?</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Detalhes da Associação</h4>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Expert</dt>
+                    <dd class="col-sm-9">
+                        <strong>@Model.Expert.Nome</strong>
+                        @if (!string.IsNullOrEmpty(Model.Expert.Descricao))
+                        {
+                            <br><small class="text-muted">@Model.Expert.Descricao</small>
+                        }
+                    </dd>
+                    
+                    <dt class="col-sm-3">Casa de Apostas</dt>
+                    <dd class="col-sm-9">
+                        <strong>@Model.CasaDeApostas.Nome</strong>
+                        @if (!string.IsNullOrEmpty(Model.CasaDeApostas.Descricao))
+                        {
+                            <br><small class="text-muted">@Model.CasaDeApostas.Descricao</small>
+                        }
+                    </dd>
+                    
+                    <dt class="col-sm-3">Código de Afiliado</dt>
+                    <dd class="col-sm-9">
+                        <code>@Model.CodigoAfiliado</code>
+                    </dd>
+                    
+                    @if (!string.IsNullOrEmpty(Model.ParametrosAdicionais))
+                    {
+                        <dt class="col-sm-3">Parâmetros Adicionais</dt>
+                        <dd class="col-sm-9">
+                            <code class="small">@Model.ParametrosAdicionais</code>
+                        </dd>
+                    }
+                    
+                    <dt class="col-sm-3">Data de Criação</dt>
+                    <dd class="col-sm-9">@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")</dd>
+                </dl>
+            </div>
+            <div class="card-footer">
+                <form asp-action="Delete" class="d-inline">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash"></i> Confirmar Remoção
+                    </button>
+                </form>
+                <a asp-action="Index" asp-route-expertId="@Model.ExpertId" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="alert alert-warning" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-exclamation-triangle"></i> Consequências da remoção
+            </h6>
+            <ul class="small mb-0">
+                <li>A geração de links para esta casa será desabilitada</li>
+                <li>Links já gerados continuarão funcionando</li>
+                <li>A associação pode ser recriada posteriormente</li>
+                <li>Esta é uma operação reversível</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-chart-bar"></i> Estatísticas
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-12 mb-3">
+                        <h4 class="text-muted">@((DateTime.Now - Model.DataCriacao).Days)</h4>
+                        <small class="text-muted">Dias Ativa</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-3" role="alert">
+            <h6 class="alert-heading">
+                <i class="fas fa-info-circle"></i> Alternativa
+            </h6>
+            <p class="small mb-2">
+                Se você apenas quer atualizar os códigos ou parâmetros, considere usar a opção de edição ao invés de remover.
+            </p>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-edit"></i> Editar ao invés de remover
+            </a>
+        </div>
+    </div>
+</div>

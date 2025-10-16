@@ -1,0 +1,143 @@
+@model TrakeadorWeb.ViewModels.LinkTrackingViewModel
+
+@{
+    ViewData["Title"] = "Gerador de Links - " + Model.ExpertCasaApostasAfiliado.CasaDeApostas.Nome;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>@Model.ExpertCasaApostasAfiliado.CasaDeApostas.Nome</h1>
+        <p class="text-muted">Expert: @Model.ExpertCasaApostasAfiliado.Expert.Nome</p>
+    </div>
+    <a asp-action="Expert" asp-route-id="@Model.ExpertCasaApostasAfiliado.ExpertId" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-link"></i> Gerador de Links Rastreados
+                </h4>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.Sucesso != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="fas fa-check-circle"></i> @ViewBag.Sucesso
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <form asp-action="ProcessarLink" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    <input type="hidden" asp-for="ExpertCasaApostasAfiliadoId" value="@Model.ExpertCasaApostasAfiliado.Id" />
+                    
+                    <div class="mb-3">
+                        <label asp-for="LinkOriginal" class="form-label">Link Original</label>
+                        <textarea asp-for="LinkOriginal" class="form-control" rows="3" 
+                                  placeholder="Cole aqui o link original da casa de apostas..."></textarea>
+                        <span asp-validation-for="LinkOriginal" class="text-danger"></span>
+                        <div class="form-text">
+                            Cole o link original que você deseja transformar em um link rastreado.
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-magic"></i> Gerar Link Rastreado
+                    </button>
+                </form>
+                
+                @if (!string.IsNullOrEmpty(Model.LinkRastreado))
+                {
+                    <hr>
+                    <div class="mt-4">
+                        <label class="form-label">
+                            <strong>Link Rastreado Gerado:</strong>
+                        </label>
+                        <div class="input-group">
+                            <textarea class="form-control" rows="3" readonly id="linkGerado">@Model.LinkRastreado</textarea>
+                            <button class="btn btn-outline-secondary" type="button" onclick="copiarLink()">
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                        <div class="form-text text-success">
+                            <i class="fas fa-check"></i> Link processado com sucesso! Agora você pode copiá-lo e usar.
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i> Informações
+                </h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Casa de Apostas:</strong><br>@Model.ExpertCasaApostasAfiliado.CasaDeApostas.Nome</p>
+                
+                <p><strong>Expert:</strong><br>@Model.ExpertCasaApostasAfiliado.Expert.Nome</p>
+                
+                <p><strong>Código Afiliado:</strong><br>
+                   <code class="small">@Model.ExpertCasaApostasAfiliado.CodigoAfiliado</code>
+                </p>
+                
+                @if (!string.IsNullOrEmpty(Model.ExpertCasaApostasAfiliado.ParametrosAdicionais))
+                {
+                    <p><strong>Parâmetros Adicionais:</strong><br>
+                       <code class="small">@Model.ExpertCasaApostasAfiliado.ParametrosAdicionais</code>
+                    </p>
+                }
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-question-circle"></i> Como usar
+                </h6>
+            </div>
+            <div class="card-body small">
+                <ol>
+                    <li>Cole o link original da @Model.ExpertCasaApostasAfiliado.CasaDeApostas.Nome no campo acima</li>
+                    <li>Clique em "Gerar Link Rastreado"</li>
+                    <li>Copie o link gerado e use em suas campanhas</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        function copiarLink() {
+            const linkGerado = document.getElementById('linkGerado');
+            linkGerado.select();
+            linkGerado.setSelectionRange(0, 99999);
+            
+            navigator.clipboard.writeText(linkGerado.value).then(function() {
+                // Feedback visual
+                const botao = event.target.closest('button');
+                const textoOriginal = botao.innerHTML;
+                botao.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+                botao.classList.remove('btn-outline-secondary');
+                botao.classList.add('btn-success');
+                
+                setTimeout(function() {
+                    botao.innerHTML = textoOriginal;
+                    botao.classList.remove('btn-success');
+                    botao.classList.add('btn-outline-secondary');
+                }, 2000);
+            });
+        }
+    </script>
+}
