@@ -4,33 +4,57 @@ namespace TrakeadorWeb.Services
 {
     public class LinkTrackingService : ILinkTrackingService
     {
-        public string ProcessarLinkEsportiva(string linkOriginal, string codigoAfiliado, string? parametrosAdicionais = null)
+        public string ProcessarLinkEsportiva(string linkOriginal, string codigoAfiliado, string? canal = null, string? destino = null, string? detalhesAdicionais = null, string? parametrosAdicionais = null)
         {
             try
             {
                 var uri = new Uri(linkOriginal);
+
+                var shareCode = HttpUtility.ParseQueryString(uri.Query).Get("shareCode") ?? string.Empty;
+
                 var query = HttpUtility.ParseQueryString(uri.Query);
+                // Use a valid time zone ID for Bahia, Brazil
+                // On Windows: "E. South America Standard Time"
+                // On Linux: "America/Bahia"
+                TimeZoneInfo bahiaTimeZone;
+                try
+                {
+                    bahiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("E. South America Standard Time");
+                }
+                catch (TimeZoneNotFoundException)
+                {
+                    bahiaTimeZone = TimeZoneInfo.FindSystemTimeZoneById("America/Bahia");
+                }
+                var dataBahia = TimeZoneInfo.ConvertTime(DateTime.UtcNow, bahiaTimeZone);
                 
                 // Adiciona os parâmetros de rastreamento da Esportiva
-                query["afp"] = "trafego";
-                query["afp1"] = "14_10_25";
-                query["afp2"] = "semana3out";
-                query["afp6"] = "superodd";
-                query["afp9"] = "SPODDBOTXFLAGP";
+                query["afp"] = canal;
+                query["afp1"] = dataBahia.ToString("dd_MM_yy");
+                var numeroSemana = System.Globalization.CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(
+                    dataBahia,
+                    System.Globalization.CalendarWeekRule.FirstFourDayWeek,
+                    DayOfWeek.Sunday
+                );
+                var nomeMesEncurtado = dataBahia.ToString("MMM", System.Globalization.CultureInfo.InvariantCulture).ToLower();
+                query["afp2"] = $"semana{numeroSemana}{nomeMesEncurtado}";
+                query["afp6"] = destino;
+                query["afp9"] = detalhesAdicionais;
                 query["home"] = "1";
 
                 // Mantém o shareCode original se existir
                 // Os outros parâmetros são adicionados
 
-                var builder = new UriBuilder(uri)
-                {
-                    Query = query.ToString()
-                };
+                var afpParam = string.IsNullOrEmpty(query["afp"]) ? "" : $"&afp={query["afp"]}";
+                var afp6Param = string.IsNullOrEmpty(query["afp6"]) ? "" : $"&afp6={query["afp6"]}";
+                var afp9Param = string.IsNullOrEmpty(query["afp9"]) ? "" : $"&afp9={query["afp9"]}";
+                var queryFinal = $"https://go.aff.esportiva.bet/{codigoAfiliado}?shareCode={shareCode}{afpParam}&afp1={query["afp1"]}&afp2={query["afp2"]}{afp6Param}{afp9Param}&home={query["home"]}";
 
-                return builder.ToString();
+                return queryFinal;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Console.WriteLine("Erro ao processar o link da Esportiva.");
+                Console.WriteLine($"Erro detalhes: {ex.Message}");
                 return linkOriginal; // Retorna o link original em caso de erro
             }
         }
@@ -42,7 +66,7 @@ namespace TrakeadorWeb.Services
                 // Para Novibet, precisamos construir um link completamente novo
                 var encodedUrl = HttpUtility.UrlEncode(linkOriginal);
                 
-                return $"https://rt.novibet.partners/o/MVpiOM?lpage=jcBppl&site_id=1020436&redirect_url={encodedUrl}";
+                return $"https://rt.novibet.partners/o/{codigoAfiliado}?{parametrosAdicionais}&redirect_url={encodedUrl}";
             }
             catch (Exception)
             {

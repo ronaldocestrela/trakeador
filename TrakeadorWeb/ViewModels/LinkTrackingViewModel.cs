@@ -15,5 +15,14 @@ namespace TrakeadorWeb.ViewModels
 
         [Display(Name = "Link Rastreado")]
         public string? LinkRastreado { get; set; }
+
+        [Display(Name = "Canal")]
+        public string? Canal { get; set; }
+
+        [Display(Name = "Destino")]
+        public string? Destino { get; set; }
+
+        [Display(Name = "Detalhes Adicionais")]
+        public string? DetalhesAdicionais { get; set; }
     }
 }

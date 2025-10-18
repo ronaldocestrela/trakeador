@@ -89,8 +89,11 @@ namespace TrakeadorWeb.Controllers
                 model.LinkRastreado = casaNome switch
                 {
                     "esportiva" or "esportiva.bet" => linkTrackingService.ProcessarLinkEsportiva(
-                        model.LinkOriginal, 
-                        relacao.CodigoAfiliado, 
+                        model.LinkOriginal,
+                        relacao.CodigoAfiliado,
+                        model.Canal,
+                        model.Destino,
+                        model.DetalhesAdicionais,
                         relacao.ParametrosAdicionais),
                     
                     "novibet" => linkTrackingService.ProcessarLinkNovibet(

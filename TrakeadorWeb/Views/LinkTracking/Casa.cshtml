@@ -33,6 +33,30 @@
 
                 <form asp-action="ProcessarLink" method="post">
                     <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="Canal" class="form-label">Canal</label>
+                            <select asp-for="Canal" class="form-select">
+                                <option>Instagram</option>
+                                <option>Telegram</option>
+                                <option>WhatsApp</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Destino" class="form-label">Destino</label>
+                            <select asp-for="Destino" class="form-select">
+                                <option>Reels</option>
+                                <option>Story</option>
+                                <option>Grupo - Free</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="DetalhesAdicionais" class="form-label">Detalhes Adicionais</label>
+                            <input asp-for="DetalhesAdicionais" class="form-control" placeholder="Ex: Semana 42, Promoção X" />
+                        </div>
+
+                    </div>
                     
                     <input type="hidden" asp-for="ExpertCasaApostasAfiliadoId" value="@Model.ExpertCasaApostasAfiliado.Id" />
                     
