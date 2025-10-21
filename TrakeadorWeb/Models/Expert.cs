@@ -18,6 +18,6 @@ namespace TrakeadorWeb.Models
         public bool Ativo { get; set; } = true;
 
         // Relacionamentos
-        public virtual ICollection<ExpertCasaApostasAfiliado> CasasDeApostas { get; set; } = new List<ExpertCasaApostasAfiliado>();
+        public virtual ICollection<ExpertCasaApostasAfiliado> CasasDeApostas { get; set; } = [];
     }
 }

@@ -9,14 +9,8 @@ using TrakeadorWeb.ViewModels;
 namespace TrakeadorWeb.Controllers
 {
     [Authorize]
-    public class ExpertCasaApostasController : Controller
+    public class ExpertCasaApostasController(ApplicationDbContext context) : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public ExpertCasaApostasController(ApplicationDbContext context)
-        {
-            _context = context;
-        }
 
         // GET: ExpertCasaApostas/Index/5 (ExpertId)
         public async Task<IActionResult> Index(int? expertId)
@@ -26,7 +20,7 @@ namespace TrakeadorWeb.Controllers
                 return NotFound();
             }
 
-            var expert = await _context.Experts
+            var expert = await context.Experts
                 .Include(e => e.CasasDeApostas)
                     .ThenInclude(eca => eca.CasaDeApostas)
                 .FirstOrDefaultAsync(e => e.Id == expertId && e.Ativo);
@@ -47,23 +41,23 @@ namespace TrakeadorWeb.Controllers
                 return NotFound();
             }
 
-            var expert = await _context.Experts.FindAsync(expertId);
+            var expert = await context.Experts.FindAsync(expertId);
             if (expert == null || !expert.Ativo)
             {
                 return NotFound();
             }
 
             // Buscar casas de apostas que ainda não estão associadas a este expert
-            var casasJaAssociadas = await _context.ExpertCasaApostasAfiliados
+            var casasJaAssociadas = await context.ExpertCasaApostasAfiliados
                 .Where(eca => eca.ExpertId == expertId && eca.Ativo)
                 .Select(eca => eca.CasaDeApostasId)
                 .ToListAsync();
 
-            var casasDisponiveis = await _context.CasasDeApostas
+            var casasDisponiveis = await context.CasasDeApostas
                 .Where(c => c.Ativo && !casasJaAssociadas.Contains(c.Id))
                 .ToListAsync();
 
-            if (!casasDisponiveis.Any())
+            if (casasDisponiveis.Count == 0)
             {
                 TempData["ErrorMessage"] = "Todas as casas de apostas já estão associadas a este expert.";
                 return RedirectToAction(nameof(Index), new { expertId });
@@ -87,7 +81,7 @@ namespace TrakeadorWeb.Controllers
             if (ModelState.IsValid)
             {
                 // Verificar se a associação já existe
-                var associacaoExistente = await _context.ExpertCasaApostasAfiliados
+                var associacaoExistente = await context.ExpertCasaApostasAfiliados
                     .FirstOrDefaultAsync(eca => 
                         eca.ExpertId == model.ExpertId && 
                         eca.CasaDeApostasId == model.CasaDeApostasId);
@@ -106,8 +100,8 @@ namespace TrakeadorWeb.Controllers
                         associacaoExistente.ParametrosAdicionais = model.ParametrosAdicionais;
                         associacaoExistente.DataCriacao = DateTime.Now;
                         
-                        _context.Update(associacaoExistente);
-                        await _context.SaveChangesAsync();
+                        context.Update(associacaoExistente);
+                        await context.SaveChangesAsync();
                         
                         TempData["SuccessMessage"] = "Associação reativada com sucesso!";
                         return RedirectToAction(nameof(Index), new { expertId = model.ExpertId });
@@ -125,8 +119,8 @@ namespace TrakeadorWeb.Controllers
                         DataCriacao = DateTime.Now
                     };
 
-                    _context.Add(novaAssociacao);
-                    await _context.SaveChangesAsync();
+                    context.Add(novaAssociacao);
+                    await context.SaveChangesAsync();
                     
                     TempData["SuccessMessage"] = "Casa de apostas associada com sucesso!";
                     return RedirectToAction(nameof(Index), new { expertId = model.ExpertId });
@@ -134,15 +128,15 @@ namespace TrakeadorWeb.Controllers
             }
 
             // Recarregar dados para a view em caso de erro
-            var expert = await _context.Experts.FindAsync(model.ExpertId);
+            var expert = await context.Experts.FindAsync(model.ExpertId);
             model.ExpertNome = expert?.Nome ?? "";
 
-            var casasJaAssociadas = await _context.ExpertCasaApostasAfiliados
+            var casasJaAssociadas = await context.ExpertCasaApostasAfiliados
                 .Where(eca => eca.ExpertId == model.ExpertId && eca.Ativo)
                 .Select(eca => eca.CasaDeApostasId)
                 .ToListAsync();
 
-            var casasDisponiveis = await _context.CasasDeApostas
+            var casasDisponiveis = await context.CasasDeApostas
                 .Where(c => c.Ativo && !casasJaAssociadas.Contains(c.Id))
                 .ToListAsync();
 
@@ -159,7 +153,7 @@ namespace TrakeadorWeb.Controllers
                 return NotFound();
             }
 
-            var associacao = await _context.ExpertCasaApostasAfiliados
+            var associacao = await context.ExpertCasaApostasAfiliados
                 .Include(eca => eca.Expert)
                 .Include(eca => eca.CasaDeApostas)
                 .FirstOrDefaultAsync(eca => eca.Id == id && eca.Ativo);
@@ -197,7 +191,7 @@ namespace TrakeadorWeb.Controllers
             {
                 try
                 {
-                    var associacao = await _context.ExpertCasaApostasAfiliados.FindAsync(id);
+                    var associacao = await context.ExpertCasaApostasAfiliados.FindAsync(id);
                     if (associacao == null || !associacao.Ativo)
                     {
                         return NotFound();
@@ -206,8 +200,8 @@ namespace TrakeadorWeb.Controllers
                     associacao.CodigoAfiliado = model.CodigoAfiliado;
                     associacao.ParametrosAdicionais = model.ParametrosAdicionais;
 
-                    _context.Update(associacao);
-                    await _context.SaveChangesAsync();
+                    context.Update(associacao);
+                    await context.SaveChangesAsync();
                     
                     TempData["SuccessMessage"] = "Associação atualizada com sucesso!";
                     return RedirectToAction(nameof(Index), new { expertId = associacao.ExpertId });
@@ -219,7 +213,7 @@ namespace TrakeadorWeb.Controllers
             }
 
             // Recarregar dados em caso de erro
-            var associacaoReload = await _context.ExpertCasaApostasAfiliados
+            var associacaoReload = await context.ExpertCasaApostasAfiliados
                 .Include(eca => eca.Expert)
                 .Include(eca => eca.CasaDeApostas)
                 .FirstOrDefaultAsync(eca => eca.Id == id);
@@ -241,7 +235,7 @@ namespace TrakeadorWeb.Controllers
                 return NotFound();
             }
 
-            var associacao = await _context.ExpertCasaApostasAfiliados
+            var associacao = await context.ExpertCasaApostasAfiliados
                 .Include(eca => eca.Expert)
                 .Include(eca => eca.CasaDeApostas)
                 .FirstOrDefaultAsync(eca => eca.Id == id && eca.Ativo);
@@ -259,12 +253,12 @@ namespace TrakeadorWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var associacao = await _context.ExpertCasaApostasAfiliados.FindAsync(id);
+            var associacao = await context.ExpertCasaApostasAfiliados.FindAsync(id);
             if (associacao != null)
             {
                 associacao.Ativo = false; // Soft delete
-                _context.Update(associacao);
-                await _context.SaveChangesAsync();
+                context.Update(associacao);
+                await context.SaveChangesAsync();
                 
                 TempData["SuccessMessage"] = "Associação removida com sucesso!";
                 return RedirectToAction(nameof(Index), new { expertId = associacao.ExpertId });

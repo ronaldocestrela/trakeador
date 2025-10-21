@@ -1,0 +1,99 @@
+@model TrakeadorWeb.Models.Destino
+
+@{
+    ViewData["Title"] = "Excluir Destino";
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col">
+            <h1 class="display-5 text-danger">
+                <i class="fas fa-exclamation-triangle"></i> Excluir Destino
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index">Destinos</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Excluir</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Confirmar Exclusão</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Atenção!</strong> Esta ação não pode ser desfeita.
+                    </div>
+
+                    <h5>Tem certeza que deseja excluir este destino?</h5>
+                    
+                    <dl class="row mt-4">
+                        <dt class="col-sm-3">
+                            <i class="fas fa-hashtag"></i> ID
+                        </dt>
+                        <dd class="col-sm-9">
+                            @Model.Id
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            <i class="fas fa-map-pin"></i> Destino
+                        </dt>
+                        <dd class="col-sm-9">
+                            <strong>@Model.Nome</strong>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            <i class="fas fa-broadcast-tower"></i> Canal
+                        </dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-primary">@Model.Canal.Nome</span>
+                        </dd>
+                    </dl>
+
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Sim, Excluir
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle text-info"></i> Importante
+                    </h5>
+                    <p class="card-text">
+                        <strong>O que será excluído:</strong>
+                    </p>
+                    <ul>
+                        <li>O destino <strong>@Model.Nome</strong></li>
+                        <li>Todos os registros associados</li>
+                    </ul>
+                    <hr>
+                    <p class="card-text">
+                        <strong>O que NÃO será afetado:</strong>
+                    </p>
+                    <ul>
+                        <li>O canal <strong>@Model.Canal.Nome</strong></li>
+                        <li>Outros destinos do mesmo canal</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

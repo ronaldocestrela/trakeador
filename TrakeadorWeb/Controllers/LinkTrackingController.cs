@@ -55,6 +55,11 @@ namespace TrakeadorWeb.Controllers
                 ExpertCasaApostasAfiliado = relacao
             };
 
+            // Carregar canais para o select
+            ViewBag.Canais = await context.Canais
+                .OrderBy(c => c.Nome)
+                .ToListAsync();
+
             return View(viewModel);
         }
 
@@ -63,12 +68,6 @@ namespace TrakeadorWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ProcessarLink(LinkTrackingViewModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.LinkOriginal))
-            {
-                ModelState.AddModelError("LinkOriginal", "O link original é obrigatório.");
-                return View("Casa", model);
-            }
-
             var relacao = await context.ExpertCasaApostasAfiliados
                 .Include(eca => eca.Expert)
                 .Include(eca => eca.CasaDeApostas)
@@ -80,6 +79,27 @@ namespace TrakeadorWeb.Controllers
             }
 
             model.ExpertCasaApostasAfiliado = relacao;
+
+            // Carregar canais para o select
+            ViewBag.Canais = await context.Canais
+                .OrderBy(c => c.Nome)
+                .ToListAsync();
+
+            if (string.IsNullOrWhiteSpace(model.LinkOriginal))
+            {
+                ModelState.AddModelError("LinkOriginal", "O link original é obrigatório.");
+                return View("Casa", model);
+            }
+
+            // Converter CanalId para nome do canal
+            if (!string.IsNullOrEmpty(model.Canal) && int.TryParse(model.Canal, out int canalId))
+            {
+                var canal = await context.Canais.FindAsync(canalId);
+                if (canal != null)
+                {
+                    model.Canal = canal.Nome;
+                }
+            }
 
             // Processar o link baseado na casa de apostas
             var casaNome = relacao.CasaDeApostas.Nome.ToLower();
@@ -118,6 +138,19 @@ namespace TrakeadorWeb.Controllers
             }
 
             return View("Casa", model);
+        }
+
+        // GET: LinkTracking/GetDestinosByCanal/5
+        [HttpGet]
+        public async Task<IActionResult> GetDestinosByCanal(int id)
+        {
+            var destinos = await context.Destinos
+                .Where(d => d.CanalId == id)
+                .OrderBy(d => d.Nome)
+                .Select(d => new { id = d.Id, nome = d.Nome })
+                .ToListAsync();
+
+            return Json(destinos);
         }
     }
 }

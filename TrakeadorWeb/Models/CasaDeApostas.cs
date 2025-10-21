@@ -21,6 +21,6 @@ namespace TrakeadorWeb.Models
         public DateTime DataCriacao { get; set; } = DateTime.Now;
 
         // Relacionamentos
-        public virtual ICollection<ExpertCasaApostasAfiliado> Experts { get; set; } = new List<ExpertCasaApostasAfiliado>();
+        public virtual ICollection<ExpertCasaApostasAfiliado> Experts { get; set; } = [];
     }
 }

@@ -6,21 +6,13 @@ using TrakeadorWeb.ViewModels;
 namespace TrakeadorWeb.Controllers
 {
     [Authorize]
-    public class UserManagementController : Controller
+    public class UserManagementController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager) : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-
-        public UserManagementController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
 
         // GET: UserManagement
         public IActionResult Index()
         {
-            var users = _userManager.Users.ToList();
+            var users = userManager.Users.ToList();
             return View(users);
         }
 
@@ -44,7 +36,7 @@ namespace TrakeadorWeb.Controllers
                     EmailConfirmed = true
                 };
 
-                var result = await _userManager.CreateAsync(user, model.Password);
+                var result = await userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {
@@ -69,7 +61,7 @@ namespace TrakeadorWeb.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -83,18 +75,18 @@ namespace TrakeadorWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             if (user != null)
             {
                 // Verificar se não é o último usuário admin
-                var totalUsers = _userManager.Users.Count();
+                var totalUsers = userManager.Users.Count();
                 if (totalUsers <= 1)
                 {
                     TempData["ErrorMessage"] = "Não é possível excluir o último usuário do sistema.";
                     return RedirectToAction(nameof(Index));
                 }
 
-                var result = await _userManager.DeleteAsync(user);
+                var result = await userManager.DeleteAsync(user);
                 if (result.Succeeded)
                 {
                     TempData["SuccessMessage"] = $"Usuário {user.Email} excluído com sucesso!";
@@ -116,7 +108,7 @@ namespace TrakeadorWeb.Controllers
                 return NotFound();
             }
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -141,14 +133,14 @@ namespace TrakeadorWeb.Controllers
                 return View(model);
             }
 
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            var user = await userManager.FindByIdAsync(model.UserId);
             if (user == null)
             {
                 return NotFound();
             }
 
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+            var token = await userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await userManager.ResetPasswordAsync(user, token, model.NewPassword);
 
             if (result.Succeeded)
             {

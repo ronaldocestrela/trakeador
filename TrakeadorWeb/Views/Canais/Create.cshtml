@@ -1,0 +1,76 @@
+@model TrakeadorWeb.Models.Canal
+
+@{
+    ViewData["Title"] = "Criar Canal";
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col">
+            <h1 class="display-5">
+                <i class="fas fa-plus-circle text-primary"></i> Criar Novo Canal
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index">Canais</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Criar</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Nome" class="form-label">
+                                <i class="fas fa-tag"></i> Nome do Canal
+                            </label>
+                            <input asp-for="Nome" class="form-control" placeholder="Ex: WhatsApp, Telegram, Instagram" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                            <div class="form-text">
+                                Digite o nome do canal de origem dos links
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle text-info"></i> Informações
+                    </h5>
+                    <p class="card-text">
+                        <strong>O que são canais?</strong><br>
+                        Canais representam os meios de comunicação por onde você compartilha seus links, como WhatsApp, Telegram, Instagram, etc.
+                    </p>
+                    <hr>
+                    <p class="card-text">
+                        <strong>Dica:</strong><br>
+                        Após criar o canal, você poderá adicionar destinos específicos para melhor organização.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

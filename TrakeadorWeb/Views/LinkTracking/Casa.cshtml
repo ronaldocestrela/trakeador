@@ -37,25 +37,33 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label asp-for="Canal" class="form-label">Canal</label>
-                            <select asp-for="Canal" class="form-select">
-                                <option>Instagram</option>
-                                <option>Telegram</option>
-                                <option>WhatsApp</option>
+                            <select asp-for="Canal" id="canalSelect" class="form-select">
+                                <option value="">-- Selecione um Canal --</option>
+                                @if (ViewBag.Canais != null)
+                                {
+                                    foreach (var canal in ViewBag.Canais)
+                                    {
+                                        <option value="@canal.Id">@canal.Nome</option>
+                                    }
+                                }
                             </select>
+                            <span asp-validation-for="Canal" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="Destino" class="form-label">Destino</label>
-                            <select asp-for="Destino" class="form-select">
-                                <option>Reels</option>
-                                <option>Story</option>
-                                <option>Grupo - Free</option>
+                            <select asp-for="Destino" id="destinoSelect" class="form-select" disabled>
+                                <option value="">-- Selecione um Canal primeiro --</option>
                             </select>
+                            <span asp-validation-for="Destino" class="text-danger"></span>
+                            <div class="form-text" id="loadingDestinos" style="display: none;">
+                                <span class="spinner-border spinner-border-sm" role="status"></span>
+                                Carregando destinos...
+                            </div>
                         </div>
                         <div class="col-md-4">
                             <label asp-for="DetalhesAdicionais" class="form-label">Detalhes Adicionais</label>
                             <input asp-for="DetalhesAdicionais" class="form-control" placeholder="Ex: Semana 42, Promoção X" />
                         </div>
-
                     </div>
                     
                     <input type="hidden" asp-for="ExpertCasaApostasAfiliadoId" value="@Model.ExpertCasaApostasAfiliado.Id" />
@@ -143,6 +151,46 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
     <script>
+        // Função para carregar destinos baseado no canal selecionado
+        document.getElementById('canalSelect').addEventListener('change', function() {
+            const canalId = this.value;
+            const destinoSelect = document.getElementById('destinoSelect');
+            const loadingIndicator = document.getElementById('loadingDestinos');
+            
+            // Limpar select de destinos
+            destinoSelect.innerHTML = '<option value="">-- Selecione um destino --</option>';
+            destinoSelect.disabled = true;
+            
+            if (canalId) {
+                // Mostrar loading
+                loadingIndicator.style.display = 'block';
+                
+                // Buscar destinos via AJAX
+                fetch(`/LinkTracking/GetDestinosByCanal/${canalId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        loadingIndicator.style.display = 'none';
+                        
+                        if (data.length > 0) {
+                            data.forEach(destino => {
+                                const option = document.createElement('option');
+                                option.value = destino.nome;
+                                option.textContent = destino.nome;
+                                destinoSelect.appendChild(option);
+                            });
+                            destinoSelect.disabled = false;
+                        } else {
+                            destinoSelect.innerHTML = '<option value="">Nenhum destino cadastrado para este canal</option>';
+                        }
+                    })
+                    .catch(error => {
+                        loadingIndicator.style.display = 'none';
+                        console.error('Erro ao carregar destinos:', error);
+                        destinoSelect.innerHTML = '<option value="">Erro ao carregar destinos</option>';
+                    });
+            }
+        });
+        
         function copiarLink() {
             const linkGerado = document.getElementById('linkGerado');
             linkGerado.select();

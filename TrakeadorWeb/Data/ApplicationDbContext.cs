@@ -14,6 +14,8 @@ namespace TrakeadorWeb.Data
         public DbSet<Expert> Experts { get; set; }
         public DbSet<CasaDeApostas> CasasDeApostas { get; set; }
         public DbSet<ExpertCasaApostasAfiliado> ExpertCasaApostasAfiliados { get; set; }
+        public DbSet<Canal> Canais { get; set; }
+        public DbSet<Destino> Destinos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -58,6 +60,30 @@ namespace TrakeadorWeb.Data
 
                 // Índice único para evitar duplicação de expert + casa de apostas
                 entity.HasIndex(e => new { e.ExpertId, e.CasaDeApostasId }).IsUnique();
+            });
+
+            // Configuração da entidade Canal
+            builder.Entity<Canal>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Nome).IsRequired().HasMaxLength(100);
+                entity.HasIndex(e => e.Nome).IsUnique();
+            });
+
+            // Configuração da entidade Destino
+            builder.Entity<Destino>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Nome).IsRequired().HasMaxLength(100);
+
+                // Relacionamento com Canal
+                entity.HasOne(e => e.Canal)
+                    .WithMany(c => c.Destinos)
+                    .HasForeignKey(e => e.CanalId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // Índice único para evitar duplicação de nome dentro do mesmo canal
+                entity.HasIndex(e => new { e.Nome, e.CanalId }).IsUnique();
             });
         }
     }

@@ -1,0 +1,125 @@
+@model TrakeadorWeb.Models.Canal
+
+@{
+    ViewData["Title"] = "Excluir Canal";
+}
+
+<div class="container">
+    <div class="row mb-3">
+        <div class="col">
+            <h1 class="display-5 text-danger">
+                <i class="fas fa-exclamation-triangle"></i> Excluir Canal
+            </h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-action="Index">Canais</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Excluir</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card border-danger shadow">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Confirmar Exclusão</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Atenção!</strong> Esta ação não pode ser desfeita.
+                    </div>
+
+                    <h5>Tem certeza que deseja excluir este canal?</h5>
+                    
+                    <dl class="row mt-4">
+                        <dt class="col-sm-3">
+                            <i class="fas fa-hashtag"></i> ID
+                        </dt>
+                        <dd class="col-sm-9">
+                            @Model.Id
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            <i class="fas fa-tag"></i> Nome
+                        </dt>
+                        <dd class="col-sm-9">
+                            <strong>@Model.Nome</strong>
+                        </dd>
+
+                        <dt class="col-sm-3">
+                            <i class="fas fa-map-marker-alt"></i> Destinos
+                        </dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-info">@Model.Destinos.Count</span>
+                        </dd>
+                    </dl>
+
+                    @if (Model.Destinos.Any())
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <i class="fas fa-ban"></i>
+                            <strong>Não é possível excluir!</strong><br>
+                            Este canal possui @Model.Destinos.Count destino(s) associado(s). 
+                            Exclua ou reatribua os destinos antes de excluir o canal.
+                        </div>
+
+                        <div class="mt-3">
+                            <h6>Destinos associados:</h6>
+                            <ul class="list-group">
+                                @foreach (var destino in Model.Destinos.OrderBy(d => d.Nome))
+                                {
+                                    <li class="list-group-item">
+                                        <i class="fas fa-map-pin text-info"></i> @destino.Nome
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="mt-4">
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Voltar para Lista
+                            </a>
+                            <a asp-controller="Destinos" asp-action="Index" class="btn btn-info">
+                                <i class="fas fa-map-marker-alt"></i> Gerenciar Destinos
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <form asp-action="Delete" method="post">
+                            <input type="hidden" asp-for="Id" />
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Sim, Excluir
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                            </div>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-info-circle text-info"></i> Importante
+                    </h5>
+                    <p class="card-text">
+                        <strong>Antes de excluir:</strong>
+                    </p>
+                    <ul>
+                        <li>Verifique se há destinos associados</li>
+                        <li>Esta ação é permanente</li>
+                        <li>Dados relacionados podem ser afetados</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

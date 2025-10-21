@@ -46,8 +46,6 @@ launchSettings.json
 *.mdf
 *.ldf
 *.ndf
-Migrations/
-!Migrations/*.cs
 
 # Database files
 *.db
