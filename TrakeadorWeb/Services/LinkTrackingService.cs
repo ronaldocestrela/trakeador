@@ -100,7 +100,7 @@ namespace TrakeadorWeb.Services
                 var afp6Param = string.IsNullOrEmpty(query["afp6"]) ? "" : $"&afp6={query["afp6"]}";
                 var afp9Param = string.IsNullOrEmpty(query["afp9"]) ? "" : $"&afp9={query["afp9"]}";
                 
-                return $"https://rt.novibet.partners/o/{codigoAfiliado}?{parametrosAdicionais}&redirect_url={encodedUrl}{afpParam}&afp1={query["afp1"]}&afp2={query["afp2"]}{afp6Param}{afp9Param}&home={query["home"]}";
+                return $"https://rt.novibet.partners/o/{parametrosAdicionais}?{codigoAfiliado}&redirect_url={encodedUrl}{afpParam}&afp1={query["afp1"]}&afp2={query["afp2"]}{afp6Param}{afp9Param}&home={query["home"]}";
             }
             catch (Exception ex)
             {
