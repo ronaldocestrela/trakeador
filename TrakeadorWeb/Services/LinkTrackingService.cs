@@ -100,7 +100,8 @@ namespace TrakeadorWeb.Services
                 var afp6Param = string.IsNullOrEmpty(query["afp6"]) ? "" : $"&afp6={query["afp6"]}";
                 var afp9Param = string.IsNullOrEmpty(query["afp9"]) ? "" : $"&afp9={query["afp9"]}";
                 
-                return $"https://rt.novibet.partners/o/{codigoAfiliado}?{parametrosAdicionais}&redirect_url={encodedUrl}{afpParam}&afp1={query["afp1"]}&afp2={query["afp2"]}{afp6Param}{afp9Param}&home={query["home"]}";
+                // https://rt.novibet.partners/o/MVpiOM?lpage=jcBppl&site_id=1020436&redirect_url=https%3A%2F%2Fwww.novibet.bet.br%2Fsports%2Fshared-bet%2F5db6d066ae07ae05329d5893911848a80560fc07e5968dce5fc16f758845d85b-0
+                return $"https://rt.novibet.partners/o/{parametrosAdicionais}?lpage=jcBppl&site_id={codigoAfiliado}&redirect_url={encodedUrl}{afpParam}&afp1={query["afp1"]}&afp2={query["afp2"]}{afp6Param}{afp9Param}&home={query["home"]}";
             }
             catch (Exception ex)
             {

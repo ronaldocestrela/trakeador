@@ -40,9 +40,9 @@ namespace TrakeadorWeb.Controllers
             var relacao = await context.ExpertCasaApostasAfiliados
                 .Include(eca => eca.Expert)
                 .Include(eca => eca.CasaDeApostas)
-                .FirstOrDefaultAsync(eca => 
-                    eca.CasaDeApostasId == casaId && 
-                    eca.ExpertId == expertId && 
+                .FirstOrDefaultAsync(eca =>
+                    eca.CasaDeApostasId == casaId &&
+                    eca.ExpertId == expertId &&
                     eca.Ativo);
 
             if (relacao == null)
@@ -103,7 +103,7 @@ namespace TrakeadorWeb.Controllers
 
             // Processar o link baseado na casa de apostas
             var casaNome = relacao.CasaDeApostas.Nome.ToLower();
-            
+
             try
             {
                 model.LinkRastreado = casaNome switch
@@ -119,16 +119,25 @@ namespace TrakeadorWeb.Controllers
                     "novibet" => linkTrackingService.ProcessarLinkNovibet(
                         model.LinkOriginal,
                         relacao.CodigoAfiliado,
+                        model.Canal,
+                        model.Destino,
+                        model.DetalhesAdicionais,
                         relacao.ParametrosAdicionais),
 
                     "betmgm" => linkTrackingService.ProcessarLinkBetMgm(
                         model.LinkOriginal,
                         relacao.CodigoAfiliado,
+                        model.Canal,
+                        model.Destino,
+                        model.DetalhesAdicionais,
                         relacao.ParametrosAdicionais),
 
                     "betsson" => linkTrackingService.ProcessarLinkBetsson(
                         model.LinkOriginal,
                         relacao.CodigoAfiliado,
+                        model.Canal,
+                        model.Destino,
+                        model.DetalhesAdicionais,
                         relacao.ParametrosAdicionais),
 
                     _ => model.LinkOriginal
