@@ -76,8 +76,9 @@ app.MapHealthChecks("/health");
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await context.Database.MigrateAsync();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-    await TrakeadorWeb.Data.DbSeeder.SeedAsync(context, userManager);
+    await DbSeeder.SeedAsync(context, userManager);
 }
 
 app.Run();
