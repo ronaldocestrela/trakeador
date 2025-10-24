@@ -1,0 +1,183 @@
+@model TrakeadorWeb.Models.CasaDeApostas
+
+@{
+    ViewData["Title"] = "Excluir - " + Model.Nome;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="text-danger">Excluir Casa de Apostas</h1>
+        <p class="text-muted">Esta ação não pode ser desfeita</p>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Voltar à Lista
+    </a>
+</div>
+
+@if (Model.Experts.Any())
+{
+    <div class="alert alert-warning" role="alert">
+        <div class="d-flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-triangle fa-2x"></i>
+            </div>
+            <div class="flex-grow-1 ms-3">
+                <h4 class="alert-heading">Não é possível excluir!</h4>
+                <p class="mb-0">
+                    Esta casa de apostas possui <strong>@Model.Experts.Count expert(s)</strong> associado(s). 
+                    Você deve remover todas as associações antes de excluir a casa de apostas.
+                </p>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle"></i> Confirmar Exclusão
+                </h4>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Você tem certeza que deseja excluir a casa de apostas <strong>@Model.Nome</strong>?
+                </p>
+                
+                <dl class="row">
+                    <dt class="col-sm-3">Nome</dt>
+                    <dd class="col-sm-9"><strong>@Model.Nome</strong></dd>
+                    
+                    @if (!string.IsNullOrEmpty(Model.Descricao))
+                    {
+                        <dt class="col-sm-3">Descrição</dt>
+                        <dd class="col-sm-9">@Model.Descricao</dd>
+                    }
+                    
+                    @if (!string.IsNullOrEmpty(Model.UrlBase))
+                    {
+                        <dt class="col-sm-3">URL Base</dt>
+                        <dd class="col-sm-9"><code>@Model.UrlBase</code></dd>
+                    }
+                    
+                    <dt class="col-sm-3">Data de Criação</dt>
+                    <dd class="col-sm-9">@Model.DataCriacao.ToString("dd/MM/yyyy HH:mm")</dd>
+                    
+                    <dt class="col-sm-3">Experts Associados</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.Experts.Any())
+                        {
+                            <span class="badge bg-warning text-dark">@Model.Experts.Count expert(s)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Nenhum</span>
+                        }
+                    </dd>
+                </dl>
+
+                @if (Model.Experts.Any())
+                {
+                    <div class="alert alert-info mt-3" role="alert">
+                        <h6 class="alert-heading">
+                            <i class="fas fa-users"></i> Experts Associados:
+                        </h6>
+                        <ul class="mb-0">
+                            @foreach (var expertAssociacao in Model.Experts)
+                            {
+                                <li>
+                                    <strong>@expertAssociacao.Expert.Nome</strong> 
+                                    (Código: <code>@expertAssociacao.CodigoAfiliado</code>)
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                @if (Model.Experts.Any())
+                {
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-danger" disabled>
+                            <i class="fas fa-trash"></i> Não é Possível Excluir
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info">
+                            <i class="fas fa-eye"></i> Ver Detalhes
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <form asp-action="Delete" method="post" class="d-inline">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja excluir esta casa de apostas? Esta ação não pode ser desfeita.')">
+                                <i class="fas fa-trash"></i> Confirmar Exclusão
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info">
+                                <i class="fas fa-eye"></i> Ver Detalhes
+                            </a>
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                        </div>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i> O que acontece?
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        A casa de apostas será marcada como <strong>inativa</strong>
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success"></i>
+                        Os dados não serão removidos permanentemente
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-times text-danger"></i>
+                        Não aparecerá mais nas listagens
+                    </li>
+                    <li class="mb-0">
+                        <i class="fas fa-times text-danger"></i>
+                        Novos experts não poderão se associar
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        @if (Model.Experts.Any())
+        {
+            <div class="card mt-3 border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-exclamation-triangle"></i> Ação Necessária
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Para excluir esta casa de apostas, primeiro você deve:
+                    </p>
+                    <ol>
+                        <li>Acessar cada expert associado</li>
+                        <li>Remover a associação com esta casa</li>
+                        <li>Retornar e tentar excluir novamente</li>
+                    </ol>
+                </div>
+            </div>
+        }
+    </div>
+</div>

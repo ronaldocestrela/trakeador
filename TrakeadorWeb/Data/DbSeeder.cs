@@ -51,6 +51,13 @@ namespace TrakeadorWeb.Data
                         UrlBase = "https://www.betmgm.bet.br/",
                         Ativo = true,
                         DataCriacao = DateTime.Now
+                    },
+                    new() {
+                        Nome = "Betsson",
+                        Descricao = "Casa de apostas com foco em mercados europeus",
+                        UrlBase = "https://www.betsson.bet.br/",
+                        Ativo = true,
+                        DataCriacao = DateTime.Now
                     }
                 };
 
@@ -82,7 +89,7 @@ namespace TrakeadorWeb.Data
             }
 
             // Seed Master User
-            if (userManager.Users.Count() == 0)
+            if (!userManager.Users.Any())
             {
                 var masterUser = new IdentityUser
                 {

@@ -115,17 +115,22 @@ namespace TrakeadorWeb.Controllers
                         model.Destino,
                         model.DetalhesAdicionais,
                         relacao.ParametrosAdicionais),
-                    
+
                     "novibet" => linkTrackingService.ProcessarLinkNovibet(
-                        model.LinkOriginal, 
-                        relacao.CodigoAfiliado, 
+                        model.LinkOriginal,
+                        relacao.CodigoAfiliado,
                         relacao.ParametrosAdicionais),
-                    
+
                     "betmgm" => linkTrackingService.ProcessarLinkBetMgm(
-                        model.LinkOriginal, 
-                        relacao.CodigoAfiliado, 
+                        model.LinkOriginal,
+                        relacao.CodigoAfiliado,
                         relacao.ParametrosAdicionais),
-                    
+
+                    "betsson" => linkTrackingService.ProcessarLinkBetsson(
+                        model.LinkOriginal,
+                        relacao.CodigoAfiliado,
+                        relacao.ParametrosAdicionais),
+
                     _ => model.LinkOriginal
                 };
 
