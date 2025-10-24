@@ -117,7 +117,7 @@ namespace TrakeadorWeb.Services
                 // Para BetMGM, o linkOriginal contém apenas os IDs dos jogos
                 // Exemplo: "3906784898,3906729211" ou "3906784898"
 
-                return $"https://ntrfr.betmgm.bet.br/redirect.aspx?pid=3393&bid=1519&redirectURL=https://www.betmgm.bet.br/aposta-esportiva#featured?coupon=combination|{linkOriginal}|30|replace";
+                return $"https://ntrfr.betmgm.bet.br/redirect.aspx?pid={codigoAfiliado}&bid=1519&redirectURL=https://www.betmgm.bet.br/aposta-esportiva#featured?coupon=combination|{linkOriginal}|30|replace";
             }
             catch (Exception)
             {
