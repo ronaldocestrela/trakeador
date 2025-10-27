@@ -59,7 +59,8 @@ namespace TrakeadorWeb.Controllers
             {
                 // Verificar se já existe uma casa com o mesmo nome
                 var casaExistente = await context.CasasDeApostas
-                    .FirstOrDefaultAsync(c => c.Nome.Equals(casaDeApostas.Nome, StringComparison.CurrentCultureIgnoreCase));
+                    // .FirstOrDefaultAsync(c => c.Nome.Equals(casaDeApostas.Nome, StringComparison.CurrentCultureIgnoreCase));
+                    .FirstOrDefaultAsync(c => c.Nome.Equals(casaDeApostas.Nome.Equals(casaDeApostas.Nome, StringComparison.CurrentCultureIgnoreCase)));
 
                 if (casaExistente != null)
                 {

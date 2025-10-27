@@ -140,6 +140,14 @@ namespace TrakeadorWeb.Controllers
                         model.DetalhesAdicionais,
                         relacao.ParametrosAdicionais),
 
+                    "bateubet" => linkTrackingService.ProcessarLinkBateuBet(
+                        model.LinkOriginal,
+                        relacao.CodigoAfiliado,
+                        model.Canal,
+                        model.Destino,
+                        model.DetalhesAdicionais,
+                        relacao.ParametrosAdicionais),
+
                     _ => model.LinkOriginal
                 };
 
