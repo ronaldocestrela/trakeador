@@ -214,7 +214,7 @@ namespace TrakeadorWeb.Services
             var afpParam = string.IsNullOrEmpty(query["afp"]) ? "" : $"&afp={query["afp"]}";
             var afp6Param = string.IsNullOrEmpty(query["afp6"]) ? "" : $"&afp6={query["afp6"]}";
             var afp9Param = string.IsNullOrEmpty(query["afp9"]) ? "" : $"&afp9={query["afp9"]}";
-            var queryFinal = $"https://go.aff.esportiva.bet/{codigoAfiliado}?shareCode={shareCode}{afpParam}&afp1={query["afp1"]}&afp2={query["afp2"]}{afp6Param}{afp9Param}&home={query["home"]}";
+            var queryFinal = $"https://go.aff.esportiva.bet/{codigoAfiliado}?shareCode={shareCode}{detalhesAdicionais}{afpParam}&afp1={query["afp1"]}&afp2={query["afp2"]}{afp6Param}{afp9Param}&home={query["home"]}";
             return queryFinal;
         }
     }
