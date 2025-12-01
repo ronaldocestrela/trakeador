@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: trakeador-web
     ports:
-      - "8580:8080"
+      - "8580:8580"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:8580
